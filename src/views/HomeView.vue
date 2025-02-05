@@ -18,7 +18,7 @@ const getSearchResults = () => {
             try {
                 const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
                     searchQuery.value
-                )}&format=json&addressdetails=1&limit=5`;
+                )}&format=json&addressdetails=1&limit=5&accept-language=en`;
                 const response = await fetch(url);
                 const data = await response.json();
                 searchResults.value = data.map((result) => ({

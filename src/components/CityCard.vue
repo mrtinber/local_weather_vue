@@ -5,7 +5,7 @@
         <div class="flex flex-col flex-1 gap-2">
             <h2 class="text-xl">{{ city.city }}</h2>
             <span class="text-xs">
-                Lat: {{ city.coords.lat }} - Lon: {{ city.coords.lon }}
+                Lat: {{ city.coords.lat }} &ndash; Lon: {{ city.coords.lon }}
             </span>
         </div>
         <div class="flex flex-col gap-2">

@@ -13,19 +13,28 @@
         <!-- Weather Overview -->
         <div class="flex flex-col items-center text-white py-12">
             <h1 class="text-4xl mb-2">{{ route.params.city }}</h1>
-            <p class="text-sm mb-12">
+            <p class="text-sm mb-12 italic">
+                Last update:
                 {{
-                    new Date().toLocaleDateString("fr", {
-                        weekday: "short",
-                        day: "2-digit",
-                        month: "long",
-                    })
+                    new Date(weatherCurrent.currentTime).toLocaleDateString(
+                        "en-US",
+                        {
+                            weekday: "short",
+                            day: "2-digit",
+                            month: "long",
+                        }
+                    )
                 }}
+                -
                 {{
-                    new Date().toLocaleTimeString("fr", {
-                        timeStyle: "short",
-                    })
+                    new Date(weatherCurrent.currentTime).toLocaleTimeString(
+                        "en-US",
+                        {
+                            timeStyle: "short",
+                        }
+                    )
                 }}
+                (local time)
             </p>
             <p class="text-8xl mb-8">
                 {{ Math.round(weatherCurrent.main.temp) }}&deg;
@@ -49,8 +58,8 @@
         <!-- Daily -->
         <div class="max-w-screen-md w-full py-12">
             <div class="mx-8 text-white">
-                <h2 class="py-2">Daily Weather</h2>
-                <div class="flex gap-10">
+                <h2 class="text-xl font-medium py-2">24-hour forecast</h2>
+                <div class="flex justify-between">
                     <div
                         v-for="element in weatherDaily.list.slice(0, 8)"
                         :key="element.dt"
@@ -60,7 +69,7 @@
                             {{
                                 new Date(
                                     element.currentTime
-                                ).toLocaleTimeString("fr", {
+                                ).toLocaleTimeString("en-US", {
                                     hour: "2-digit",
                                 })
                             }}
@@ -78,9 +87,94 @@
             </div>
         </div>
 
+        <!-- Other information -->
+        <div class="max-w-screen-md w-full py-12 text-white">
+            <div class="mx flex gap-4">
+                <div class="w-[25%] bg-weather-secondary rounded-md px-3 py-2 flex flex-col justify-between">
+                    <div class="flex items-center gap-2 opacity-60">
+                        <i class="fa-solid fa-droplet"></i>
+                        <p class="uppercase">Humidity</p>
+                    </div>
+                    <p class="text-3xl text-right">
+                        {{ weatherCurrent.main.humidity }} %
+                    </p>
+                </div>
+                <div class="w-[25%] bg-weather-secondary rounded-md px-3 py-2 flex flex-col justify-between">
+                    <div class="flex items-center gap-2 opacity-60">
+                        <i class="fa-solid fa-gauge-high"></i>
+                        <p class="uppercase">Pressure</p>
+                    </div>
+                    <p class="text-3xl text-right">
+                        {{ weatherCurrent.main.pressure }} hPa
+                    </p>
+                </div>
+                <div class="w-[25%] bg-weather-secondary rounded-md px-3 py-2 flex flex-col justify-between">
+                    <div class="flex items-center gap-2 opacity-60">
+                        <i class="fa-solid fa-wind"></i>
+                        <p class="uppercase">Wind</p>
+                    </div>
+                    <div>
+                        <p class="text-3xl text-right">
+                            {{ weatherCurrent.wind.speed }} km/h
+                        </p>
+                        <p class="text-xs text-right opacity-60">
+                            Coming from:
+                            {{
+                                weatherCurrent.wind.deg === 0 ||
+                                weatherCurrent.wind.deg === 360
+                                    ? "N"
+                                    : weatherCurrent.wind.deg === 90
+                                    ? "E"
+                                    : weatherCurrent.wind.deg === 180
+                                    ? "S"
+                                    : weatherCurrent.wind.deg === 270
+                                    ? "W"
+                                    : weatherCurrent.wind.deg > 270 &&
+                                      weatherCurrent.wind.deg < 360
+                                    ? "NW"
+                                    : weatherCurrent.wind.deg > 180 &&
+                                      weatherCurrent.wind.deg < 270
+                                    ? "SW"
+                                    : weatherCurrent.wind.deg > 90 &&
+                                      weatherCurrent.wind.deg < 180
+                                    ? "SE"
+                                    : "NE"
+                            }}
+                        </p>
+                    </div>
+                </div>
+                <div class="w-[25%] bg-weather-secondary rounded-md px-3 py-2">
+                    <div class="flex items-center gap-2 opacity-60">
+                        <i class="fa-solid fa-sun"></i>
+                        <p class="uppercase"> {{ weatherCurrent.currentTime < weatherCurrent.sys.sunset * 1000 ? 'SUNSET' : "SUNRISE" }}</p>
+                    </div>
+                    <p v-bind:class="{ 'text-3xl': weatherCurrent.currentTime > weatherCurrent.sys.sunset * 1000, 'text-xs opacity-60': weatherCurrent.currentTime <= weatherCurrent.sys.sunset * 1000}" class="text-right text-nowrap">
+                        <span v-if="weatherCurrent.currentTime <= weatherCurrent.sys.sunset * 1000" class="text-xs">Sunrise:</span>
+                        {{
+                            new Date(
+                                weatherCurrent.sys.sunrise * 1000
+                            ).toLocaleTimeString("en-US", {
+                                timeStyle: "short",
+                            })
+                        }}
+                    </p>
+                    <p v-bind:class="{ 'text-3xl': weatherCurrent.currentTime < weatherCurrent.sys.sunset * 1000, 'text-xs opacity-60': weatherCurrent.currentTime >= weatherCurrent.sys.sunset * 1000}" class="text-right text-nowrap">
+                        <span v-if="weatherCurrent.currentTime >= weatherCurrent.sys.sunset * 1000" class="text-xs">Sunset:</span>
+                        {{
+                            new Date(
+                                weatherCurrent.sys.sunset * 1000
+                            ).toLocaleTimeString("en-US", {
+                                timeStyle: "short",
+                            })
+                        }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <div
             @click="removeCity"
-            class="flex items-center gap-2 py-2 px-12 text-white cursor-pointer duration-150 hover:bg-red-500"
+            class="flex items-center gap-2 py-2 px-12 text-white cursor-pointer duration-150 hover:bg-red-500 rounded-md hover:shadow-md mb-12"
         >
             <i class="fa-solid fa-trash"></i>
             <p>Remove city</p>

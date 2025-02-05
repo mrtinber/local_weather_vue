@@ -13,8 +13,9 @@
         <hr class="border-white border-opacity-10 border w-full" />
 
         <!-- Daily -->
-        <div class="flex flex-col items-center py-12">
-            <AnimatedPlaceholder class="max-w-screen-md h-[100px] w-full py-12"/>
+        <div class="flex flex-col items-center py-12 gap-12">
+            <AnimatedPlaceholder class="max-w-screen-md h-[150px] w-full py-12"/>
+            <AnimatedPlaceholder class="max-w-screen-md h-[90px] w-full py-12"/>
         </div>
 
         <div class="flex flex-col items-center">
