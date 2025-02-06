@@ -17,7 +17,8 @@
                     Hum: {{ Math.round(city.weather.main.humidity) }} %
                 </span>
                 <span class="text-xs">
-                    Feels like: {{ Math.round(city.weather.main.feels_like) }}&deg;
+                    Feels like:
+                    {{ Math.round(city.weather.main.feels_like) }}&deg;
                 </span>
             </div>
         </div>
